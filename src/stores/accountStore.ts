@@ -1,26 +1,23 @@
+import { Account } from "@/types/Account";
 import { defineStore } from "pinia";
-
-export interface Account {
-  id: number;
-  text: string;
-}
 
 export const useAccountStore = defineStore("account", {
   state: () => ({
     accounts: [] as Account[],
   }),
   actions: {
-    addAccount(text: string) {
-      if (!text.trim()) return;
-
+    addAccount(account: Account) {
       this.accounts.push({
-        id: Date.now(),
-        text: text.trim(),
+        id: Date.now().toString(),
+        label: account.label.trim(),
+        accountType: account.accountType,
+        login: account.login,
+        password: account.password,
       });
 
       this.saveToLocalStorage();
     },
-    deleteAccount(id: number) {
+    deleteAccount(id: string) {
       this.accounts = this.accounts.filter((account) => account.id !== id);
       this.saveToLocalStorage();
     },
@@ -47,3 +44,4 @@ export const useAccountStore = defineStore("account", {
     },
   },
 });
+export { Account };
