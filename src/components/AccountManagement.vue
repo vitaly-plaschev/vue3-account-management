@@ -35,7 +35,6 @@ const cleanForm = () => {
   formData.password = "";
 };
 
-
 const checkForm = () => {
   checkFields();
   if (formData.accountType && formData.login && formData.password) return true;
@@ -49,8 +48,8 @@ const submitForm = () => {
 
 const checkFields = () => {
   validationData.login = formData.login?.trim() === "";
-  validationData.accountType = formData.accountType?.trim() === ""
-  validationData.password = formData.password?.trim() === ""
+  validationData.accountType = formData.accountType?.trim() === "";
+  validationData.password = formData.password?.trim() === "";
 };
 
 const validateLogin = () =>
@@ -71,6 +70,13 @@ const validatePassword = () =>
         <span>Учетные записи</span>
         <button type="submit" class="add">+</button>
       </div>
+
+      <p>
+        <b
+          >Для указания нескольких меток для одной пары логин/пароль используйте
+          разделитель;</b
+        >
+      </p>
 
       <!-- Label -->
       <input
@@ -120,6 +126,8 @@ const validatePassword = () =>
         @blur="validatePassword"
       />
     </form>
+
+    <div class="border-line"></div>
 
     <!-- Displaying Data -->
     <ul class="account-list">
@@ -195,6 +203,11 @@ li {
 
 .error-border {
   border: 2px solid red;
+}
+
+.border-line {
+  border: 1px solid #e2e2e2;
+  margin-top: 30px;
 }
 
 .add-container {
