@@ -1,4 +1,4 @@
-# vue3-account-management
+# Vue3 account management sample with Typescript and using Pinia
 
 ## Project setup
 ```
