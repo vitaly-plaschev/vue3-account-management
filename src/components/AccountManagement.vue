@@ -3,7 +3,6 @@ import { ref, onMounted, reactive } from "vue";
 import { useAccountStore, type Account } from "@/stores/accountStore";
 
 const accountStore = useAccountStore();
-const newAccountText = ref("");
 
 const formData = reactive<Account>({
   id: "",
@@ -11,6 +10,12 @@ const formData = reactive<Account>({
   accountType: "",
   login: "",
   password: "",
+});
+
+const validationData = reactive({
+  accountType: false,
+  login: false,
+  password: false,
 });
 
 const accountTypes = [
@@ -21,22 +26,50 @@ const accountTypes = [
 onMounted(() => {
   accountStore.loadFromLocalStorage();
 });
+
+const cleanForm = () => {
+  formData.id = "";
+  formData.label = "";
+  formData.accountType = "";
+  formData.login = "";
+  formData.password = "";
+};
+
+
+const checkForm = () => {
+  checkFields();
+  if (formData.accountType && formData.login && formData.password) return true;
+};
+
+const submitForm = () => {
+  if (!checkForm()) return;
+  accountStore.addAccount(formData);
+  cleanForm();
+};
+
+const checkFields = () => {
+  validationData.login = formData.login?.trim() === "";
+  validationData.accountType = formData.accountType?.trim() === ""
+  validationData.password = formData.password?.trim() === ""
+};
+
+const validateLogin = () =>
+  (validationData.login = formData.login?.trim() === "");
+
+const validateAccountType = () =>
+  (validationData.accountType = formData.accountType?.trim() === "");
+
+const validatePassword = () =>
+  (validationData.password = formData.password?.trim() === "");
 </script>
 
 <template>
   <div class="account-app">
     <!-- Adding data -->
-    <form
-      @submit.prevent="
-        accountStore.addAccount(formData);
-        newAccountText = '';
-      "
-    >
+    <form @submit.prevent="submitForm">
       <div class="add-container">
         <span>Учетные записи</span>
-        <button type="submit" :disabled="!formData.label.trim()" class="add">
-          +
-        </button>
+        <button type="submit" class="add">+</button>
       </div>
 
       <!-- Label -->
@@ -53,6 +86,8 @@ onMounted(() => {
         v-model="formData.accountType"
         class="new-account"
         placeholder="Тип записи"
+        :class="{ 'error-border': validationData.accountType }"
+        @blur="validateAccountType"
       >
         <option disabled value="">Тип записи</option>
         <option
@@ -70,6 +105,8 @@ onMounted(() => {
         class="new-account"
         placeholder="Логин"
         maxlength="100"
+        :class="{ 'error-border': validationData.login }"
+        @blur="validateLogin"
       />
 
       <!-- Passsword -->
@@ -79,6 +116,8 @@ onMounted(() => {
         class="new-account"
         placeholder="Пароль"
         maxlength="100"
+        :class="{ 'error-border': validationData.password }"
+        @blur="validatePassword"
       />
     </form>
 
@@ -109,6 +148,7 @@ onMounted(() => {
         />
 
         <input
+          v-if="account.accountType !== 'LDAP'"
           type="password"
           :value="account.password"
           class="input new-account"
@@ -151,6 +191,10 @@ li {
   align-items: center;
   padding: 10px 10px 10px 0px;
   border-bottom: 1px solid #eee;
+}
+
+.error-border {
+  border: 2px solid red;
 }
 
 .add-container {
