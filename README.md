@@ -1,4 +1,9 @@
-# Vue3 account management sample with Typescript and using Pinia
+# Vue3 account management sample    
+Tech stack:    
+- Vue 3    
+- TypeScript
+- State management: Pinia    
+
 
 ## Project setup
 ```
